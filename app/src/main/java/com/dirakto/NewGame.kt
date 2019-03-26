@@ -16,7 +16,6 @@ class NewGame : AppCompatActivity(){//, SurfaceHolder.Callback{
 //    var surfaceView: SurfaceView? = null
 //    var surfaceHolder: SurfaceHolder? = null
 
-    var asyncTaskIsActive: Boolean = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

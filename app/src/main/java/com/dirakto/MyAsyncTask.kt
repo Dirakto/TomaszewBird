@@ -10,7 +10,6 @@ class MyAsyncTask: AsyncTask<Any, Any, Any> {
     var holder: SurfaceHolder? = null
     var view: MySurfaceView? = null
     var canvas: Canvas? = null
-    var notCancelled: Boolean = true
 
     val FPS: Long = 30
 
@@ -20,7 +19,7 @@ class MyAsyncTask: AsyncTask<Any, Any, Any> {
     }
 
     override fun doInBackground(vararg params: Any?): Any {
-        while(isCancelled){
+        while(!isCancelled){
             publishProgress()
             Thread.sleep(1000L/FPS)
 
