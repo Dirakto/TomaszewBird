@@ -7,11 +7,12 @@ import android.view.SurfaceHolder
 
 class MyAsyncTask: AsyncTask<Any, Any, Any> {
 
+
     var holder: SurfaceHolder? = null
     var view: MySurfaceView? = null
     var canvas: Canvas? = null
 
-    val FPS: Long = 30
+    val FPS: Long = 25
 
     constructor(holder: SurfaceHolder, view: MySurfaceView): super(){
         this.holder = holder
@@ -22,17 +23,14 @@ class MyAsyncTask: AsyncTask<Any, Any, Any> {
         while(!isCancelled){
             publishProgress()
             Thread.sleep(1000L/FPS)
-
         }
         return "Done"
     }
 
     override fun onProgressUpdate(vararg values: Any?) {
-        Log.i("MyINFO", "DZIALAM")
-        canvas = holder?.lockCanvas()
-//        view?.update()
-        view?.draw(canvas)
-        holder?.unlockCanvasAndPost(canvas)
+        var timeBefore = System.currentTimeMillis()
+        view?.update()
+        view?.postInvalidate()
     }
     override fun onPreExecute() {
     }

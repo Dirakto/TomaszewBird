@@ -6,6 +6,7 @@ import android.graphics.*
 import android.os.AsyncTask
 import android.util.AttributeSet
 import android.util.Log
+import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 
@@ -18,6 +19,15 @@ class MySurfaceView: SurfaceView, SurfaceHolder.Callback{
     var sun: Bitmap? = null
     var tomaszew: Bitmap? = null
     var pipe: Bitmap? = null
+    val paint = Paint()
+
+    var tomaszewHeight = 0f
+    var drop = 1f
+    var myMatrix: Matrix = Matrix()
+
+    var isReady = false
+    var isUp = false
+    var timer = 0
 
 
     constructor(context: Context): super(context){
@@ -32,13 +42,11 @@ class MySurfaceView: SurfaceView, SurfaceHolder.Callback{
     }
     constructor(context: Context, attSet: AttributeSet, int: Int): super(context, attSet, int){
         this.holder.addCallback(this)
-//        myThread = MyAsyncTask()
         this.setFocusable(true)
         setWillNotDraw(false)
     }
     constructor(context: Context, attSet: AttributeSet, int1: Int, int2: Int): super(context, attSet, int1, int2){
         this.holder.addCallback(this)
-//        myThread = MyAsyncTask()
         this.setFocusable(true)
         setWillNotDraw(false)
     }
@@ -46,30 +54,26 @@ class MySurfaceView: SurfaceView, SurfaceHolder.Callback{
 
     override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {}
 
-    override fun surfaceDestroyed(holder: SurfaceHolder?) {
-    }
+    override fun surfaceDestroyed(holder: SurfaceHolder?) {}
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
-        myThread = MyAsyncTask(this.holder, this)
-        myThread?.execute()
-
-//        val bgR =
+        tomaszewHeight = this.height*0.4f
+        myMatrix.setTranslate(this.width*0.25f, tomaszewHeight)
+        myMatrix.setRotate(30f)
         bg = Bitmap.createBitmap(BitmapFactory.decodeResource(resources, R.drawable.pixels))
-
-//        val sunR =
         sun = Bitmap.createBitmap(BitmapFactory.decodeResource(resources, R.drawable.sun))
-
         val tomaszewR = BitmapFactory.decodeResource(resources, R.drawable.tomaszew_bird32_b)
         tomaszew = Bitmap.createScaledBitmap(tomaszewR, tomaszewR.width / scale, tomaszewR.height / scale, true)
-
         pipe =  Bitmap.createBitmap(BitmapFactory.decodeResource(resources, R.drawable.pipe))
-//        holder?.apply {
-//            val canvas = lockCanvas()
-//
-//            canvas.drawCircle(100f, 100f, 100f, Paint())
-//            unlockCanvasAndPost(canvas)
-//        }
-//        this.requestLayout()
+
+//        var canvas = holder?.lockCanvas()
+//        canvas?.drawColor(Color.WHITE)
+//        canvas?.drawBitmap(bg!!, null, Rect(0,0, this.right*2, this.bottom), paint)
+//        canvas?.drawBitmap(sun!!, null, Rect(this.right-60*scale, 0,this.right, 60*scale), paint)
+//        canvas?.drawBitmap(tomaszew!!, myMatrix, paint)
+//        holder?.unlockCanvasAndPost(canvas)
+
+        myThread = MyAsyncTask(this.holder, this)
     }
 
 
@@ -77,26 +81,44 @@ class MySurfaceView: SurfaceView, SurfaceHolder.Callback{
         super.onDraw(canvas)
         canvas?.drawColor(Color.WHITE)
 
+        canvas?.drawBitmap(bg!!, null, Rect(0,0, this.right*2, this.bottom), paint)
 
-//         val bg = BitmapFactory.decodeResource(resources, R.drawable.pixels)
-//         val bitmap2 = Bitmap.createBitmap(bg)
-        canvas?.drawBitmap(bg, null, Rect(0,0, this.right*2, this.bottom), Paint())
+        canvas?.drawBitmap(sun!!, null, Rect(this.right-60*scale, 0,this.right, 60*scale), paint)
 
-//            val sun = BitmapFactory.decodeResource(resources, R.drawable.sun)
-//            val bitmap3 = Bitmap.createBitmap(sun)
-//            Log.i("xd", this.right.toString())
-         canvas?.drawBitmap(sun, null, Rect(this.right-60*scale, 0,this.right, 60*scale), Paint())
-
-        canvas?.drawBitmap(pipe, null, Rect(1000, 0, 1100+pipe!!.width, (this.height*0.752).toInt()), Paint())
 //            val oldBitmap = BitmapFactory.decodeResource(resources, R.drawable.tomaszew_bird32_b)
 //            val bitmap = Bitmap.createScaledBitmap(oldBitmap, oldBitmap.width / scale, oldBitmap.height / scale, true)
-         var matrix = Matrix()
 //       matrix.setRotate(50f, bitmap.width / 2f, bitmap.height / 2f)
-         canvas?.drawBitmap(tomaszew, matrix, Paint())
+         canvas?.drawBitmap(tomaszew!!, myMatrix, paint)
     }
 
     fun update(){
+        if(timer == 0) {
+            isUp = false
+            drop = 1f
+        }
+        if(isUp){
+            timer--
+            drop = drop + 5
+            tomaszewHeight -= drop
+            myMatrix.setRotate(30f)
+            myMatrix.setTranslate(this.width*0.25f, tomaszewHeight-drop)
+        }else {
+//            drop = drop * 10
+//            tomaszewHeight += drop
+//            myMatrix.setTranslate(this.width * 0.25f, tomaszewHeight + drop)
+        }
+    }
 
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if(!isReady) {
+            isReady = true
+            myThread?.execute()
+        }else{
+            isUp = true
+            timer = 4
+            drop = 15f
+        }
+        return super.onTouchEvent(event)
     }
 
 }
