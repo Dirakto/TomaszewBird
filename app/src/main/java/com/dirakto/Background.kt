@@ -7,8 +7,8 @@ import android.graphics.Rect
 
 class Background(private val background: Bitmap, private val right: Int, private val bottom: Int) {
 
-    private var backgroundRect: Rect = Rect(0,0, right*2, bottom)
-    private var secondBackgroundRect: Rect = Rect(right-10, 0, right*3, bottom)
+    private val backgroundRect: Rect = Rect(0,0, right*2, bottom)
+    private val secondBackgroundRect: Rect = Rect(right-10, 0, right*3, bottom)
     private var activateSecondPicture = false
 
 
@@ -20,14 +20,18 @@ class Background(private val background: Bitmap, private val right: Int, private
             secondBackgroundRect.offset(-15, 0)
         }
         if((secondBackgroundRect.right <= right)and(backgroundRect.right < 0)){
-            backgroundRect = Rect(right-40, 0, right*3, bottom)
+            backgroundRect.left = right-40
+            backgroundRect.right = right*3
+//            backgroundRect = Rect(right-40, 0, right*3, bottom)
         }
         if(secondBackgroundRect.right <= this.right){
             secondBackgroundRect.offset(-15, 0)
         }
         if(secondBackgroundRect.right < 0) {
             activateSecondPicture = false
-            secondBackgroundRect = Rect(right-40, 0, right * 3, bottom)
+            secondBackgroundRect.left = right - 40
+            secondBackgroundRect.right = right*3
+//            secondBackgroundRect = Rect(right-40, 0, right * 3, bottom)
         }
     }
 

@@ -13,7 +13,7 @@ import kotlin.random.Random
 class MySurfaceView: SurfaceView, SurfaceHolder.Callback{
 
     var myThread: MyAsyncTask? = null
-    var textArea: TextView? = null
+//    var textArea: TextView? = null
 
     val scale = 5
 
@@ -34,19 +34,19 @@ class MySurfaceView: SurfaceView, SurfaceHolder.Callback{
         this.holder.addCallback(this)
         this.setFocusable(true)
         setWillNotDraw(false)
-        textArea = (context as Activity).findViewById(R.id.textView2)
+//        textArea = (context as Activity).findViewById(R.id.textView2)
     }
     constructor(context: Context, attSet: AttributeSet): super(context, attSet){
         this.holder.addCallback(this)
         this.setFocusable(true)
         setWillNotDraw(false)
-        textArea = (context as Activity).findViewById(R.id.textView2)
+//        textArea = (context as Activity).findViewById(R.id.textView2)
     }
     constructor(context: Context, attSet: AttributeSet, int: Int): super(context, attSet, int){
         this.holder.addCallback(this)
         this.setFocusable(true)
         setWillNotDraw(false)
-        textArea = (context as Activity).findViewById(R.id.textView2)
+//        textArea = (context as Activity).findViewById(R.id.textView2)
     }
 
 
@@ -102,9 +102,6 @@ class MySurfaceView: SurfaceView, SurfaceHolder.Callback{
             tomaszew?.onTouchAction()
         return super.onTouchEvent(event)
     }
-
-
-
 
 
 }

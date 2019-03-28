@@ -1,15 +1,16 @@
 package com.dirakto
 
+import android.content.Context
 import android.graphics.*
 import android.widget.TextView
 import kotlin.random.Random
 
-class PipesList(private val pipe:Bitmap, private val pipeTop: Bitmap, private val mySurfaceView: MySurfaceView) {
+class PipesList(val pipe:Bitmap, val pipeTop: Bitmap, private val mySurfaceView: MySurfaceView) {
 
-
+    private val context: NewGame = mySurfaceView.context as NewGame
     var activatePipes = false
-    private val distance = 350
-    private var gap: Int = (mySurfaceView.tomaszew!!.tomaszewNormal.height+mySurfaceView.tomaszew!!.tomaszewNormal.height*3)
+    val distance = 350
+    val gap: Int = (mySurfaceView.tomaszew!!.tomaszewNormal.height+mySurfaceView.tomaszew!!.tomaszewNormal.height*3)
 
     var score: Int = 0
 
@@ -36,9 +37,19 @@ class PipesList(private val pipe:Bitmap, private val pipeTop: Bitmap, private va
 
         pipes!!.forEach {
             it.offset(-10, 0)
+            if(it.left < tmpRect.left && it.right > tmpRect.right){
+                score++
+                context.updateScore(score.toString())
+                if(score > context.highestScore!!){
+                    var sharedPref = context.getSharedPreferences(context.getString(R.string.file), Context.MODE_PRIVATE)?: return
+                    sharedPref.edit().putInt(context.resources.getString(R.string.high_score), score).apply()
+                }
+
+            }
             if(tmpRect.intersect(RectF(it)) || tmpRect.intersect(RectF(it.left.toFloat(), 0f, it.right.toFloat(), it.top-gap.toFloat())))
                 mySurfaceView.myThread?.cancel(true)
         }
+
         if(pipes!![0].left <= 0){
             val tmp = pipes!!.last()
             pipes!!.add(Rect(tmp.right+distance,
@@ -48,9 +59,5 @@ class PipesList(private val pipe:Bitmap, private val pipeTop: Bitmap, private va
         }
         if(pipes!![0].right <= 0)
             pipes!!.removeAt(0)
-        if(pipes!![score].right <= mySurfaceView.width * 0.25f){
-            score++
-            mySurfaceView.textArea?.setText("Halo")
-        }
     }
 }

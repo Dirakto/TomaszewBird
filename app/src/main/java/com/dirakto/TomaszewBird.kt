@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Paint
+import android.os.AsyncTask
 
 class TomaszewBird(tomaszew: Bitmap,tomaszewDown: Bitmap, private val mySurfaceView: MySurfaceView) {
 
@@ -16,7 +17,6 @@ class TomaszewBird(tomaszew: Bitmap,tomaszewDown: Bitmap, private val mySurfaceV
 
     var currentTomaszew: Bitmap = tomaszewNormal
 
-    private var isReady = false
     private var isUp = false
     private var timer = 0
 
@@ -38,6 +38,7 @@ class TomaszewBird(tomaszew: Bitmap,tomaszewDown: Bitmap, private val mySurfaceV
 
         if(isUp) {
             timer--
+            currentTomaszew = tomaszewWing
 
             if (tomaszewHeight - drop > 0) {
                 drop += 5
@@ -47,10 +48,6 @@ class TomaszewBird(tomaszew: Bitmap,tomaszewDown: Bitmap, private val mySurfaceV
                 myMatrix.setTranslate(mySurfaceView.width * 0.25f, 0f)
 
 
-            currentTomaszew = tomaszewWing
-
-            if(timer == 0)
-                Thread.sleep(50)
         }else{
             currentTomaszew = tomaszewNormal
             drop *= 10
@@ -64,8 +61,7 @@ class TomaszewBird(tomaszew: Bitmap,tomaszewDown: Bitmap, private val mySurfaceV
     }
 
     fun onTouchAction(){
-        if(!isReady) {
-            isReady = true
+        if(mySurfaceView.myThread?.status == AsyncTask.Status.PENDING) {
             mySurfaceView.myThread?.execute()
         }else{
             isUp = true

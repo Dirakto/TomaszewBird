@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Projekt1_Gra</string>
+    <string name="file">ScoreFile</string>
+    <string name="high_score">HighScore</string>
 </resources>
