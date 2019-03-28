@@ -10,7 +10,6 @@ class MyAsyncTask: AsyncTask<Any, Any, Any> {
 
     var holder: SurfaceHolder? = null
     var view: MySurfaceView? = null
-    var canvas: Canvas? = null
 
     val FPS: Long = 25
 
@@ -28,10 +27,10 @@ class MyAsyncTask: AsyncTask<Any, Any, Any> {
     }
 
     override fun onProgressUpdate(vararg values: Any?) {
-        var timeBefore = System.currentTimeMillis()
         view?.update()
         view?.postInvalidate()
     }
+
     override fun onPreExecute() {
     }
 }
